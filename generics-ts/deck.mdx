@@ -1,0 +1,540 @@
+import {
+  CodeSurfer,
+  CodeSurferColumns,
+  Step
+} from 'code-surfer'
+import {
+  github,
+  vsDark,
+  nightOwl
+} from '@code-surfer/themes'
+import img from './img.png'
+
+export const theme = nightOwl
+
+# Voyage au pays des génériques
+
+---
+
+# Moi
+
+Theodo, free-lance
+Fullstack: TypeScript, Serverless
+
+---
+
+# Libraries
+
+- JSON-Schema-to-ts
+- DynamoDB-Toolbox
+- Castore
+
+---
+
+# Qu’est-ce qu’un générique ?
+
+---
+
+<CodeSurfer>
+
+```ts
+type Contained = { value: unknown }
+```
+
+```ts
+type Contained = { value: unknown }
+
+type Contained<VALUE> = { value: VALUE }
+```
+
+```ts
+type Contained = { value: unknown }
+
+type Contained<VALUE> = { value: VALUE }
+
+type Str = Contained<string> // { value: string }
+type Num = Contained<number> // { value: number }
+```
+
+<!-- prettier-ignore -->
+```ts
+type Contained<
+  VALUE extends string | number
+> = { value: VALUE }
+
+type Str = Contained<string> // { value: string }
+type Num = Contained<number> // { value: number }
+```
+
+<!-- prettier-ignore -->
+```ts
+type Contained<
+  VALUE extends string | number = "default"
+> = { value: VALUE }
+
+type Str = Contained<string> // { value: string }
+type Num = Contained<number> // { value: number }
+```
+
+</CodeSurfer>
+
+---
+
+# Pourquoi utiliser des génériques ?
+
+- DRY
+
+---
+
+# Fonctions ?
+
+---
+
+<CodeSurfer>
+
+```ts
+const contain = (value: unknown): Contained => ({ value })
+```
+
+```ts
+const contain = (value: unknown): Contained => ({ value })
+
+contain('foo') // { value: unknown }
+```
+
+```ts
+const contain = <VALUE>(
+  value: VALUE
+): Contained<VALUE> => ({ value })
+
+contain('foo') // { value: unknown }
+```
+
+```diff 1[17:24],2,3[1:2]
+
+```
+
+```diff 3[4:19]
+
+```
+
+```ts
+const contain = <VALUE>(
+  value: VALUE
+): Contained<VALUE> => ({ value })
+
+contain<'foo'>('foo')
+// { value: 'foo' }
+```
+
+```diff 5[1:7,15:21],6
+
+```
+
+```ts 5,6
+const contain = <VALUE>(
+  value: VALUE
+): Contained<VALUE> => ({ value })
+
+contain('foo')
+// { value: 'foo' }
+```
+
+</CodeSurfer>
+
+<Notes>
+
+Le type générique va être appliqué aux argument, et peut être utilisé pour typer le retour de la fonction.
+
+On obtient cette syntaxe, qui est un peu redondante. La beauté, c'est que TypeScript peut inférer la valeur du générique à partir de l'argument.
+
+</Notes>
+
+---
+
+# Components ?
+
+(TODO)
+
+---
+
+# Classes ?
+
+---
+
+<CodeSurfer>
+
+```ts
+class Container<KEY extends string> {
+  key: KEY
+
+  constructor(key: KEY) {
+    this.key = key
+  }
+
+  contain<VALUE>(value: VALUE): { [K in KEY]: VALUE } {
+    return { [this.key]: value }
+  }
+}
+```
+
+```diff 1[16:35],2:6
+
+```
+
+```diff 8[10:53]
+
+```
+
+```ts
+class Container<KEY extends string> {
+  key: KEY
+
+  constructor(key: KEY) {
+    this.key = key
+  }
+
+  contain<VALUE>(value: VALUE): { [K in KEY]: VALUE } {
+    return { [this.key]: value }
+  }
+}
+
+const container = new Container('value')
+container.contain('foo') // { value: 'foo' }
+```
+
+</CodeSurfer>
+
+<Notes>
+
+Encore une fois, une fois la classe écrite, on n'a plus besoin d'écrire de type générique.
+
+</Notes>
+
+---
+
+# Pourquoi utiliser des génériques ?
+
+- DRY
+- Améliore considérablement le type-system
+- Pas besoin d'apprendre pour s'en servir
+
+---
+
+<CodeSurfer>
+
+```ts
+import { z } from 'zod'
+
+const schema = z.literal('foo')
+```
+
+```ts 3,4
+import { z } from 'zod'
+
+const schema = z.literal('foo')
+// z.ZodLiteral<'foo'>
+```
+
+```ts
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+
+const schema = z.literal('foo')
+// z.ZodLiteral<'foo'>
+
+const MyForm = () => {
+  const form = useForm({
+    resolver: zodResolver(schema)
+  })
+  // UseFormReturn<'foo'>
+
+  return <Form {...form}>...</Form>
+}
+```
+
+```ts 5[25:31],9[23:29],14[15:21]
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+
+const schema = z.literal<'foo'>('foo')
+// z.ZodLiteral<'foo'>
+
+const MyForm = () => {
+  const form = useForm<'foo'>({
+    resolver: zodResolver(schema)
+  })
+  // UseFormReturn<'foo'>
+
+  return <Form<'foo'> {...form}>...</Form>
+}
+```
+
+</CodeSurfer>
+
+<Notes>
+
+Il est très probable que vous utilisiez déjà des génériques dans votre code base
+
+Ce qu'il se passe c'est qu'il y a des génériques qui opèrent sous le capot
+
+</Notes>
+
+---
+
+# Definir des génériques
+
+# Transformer des génériques
+
+---
+
+# Live-coding sur un exemple concret: Le marshalling
+
+---
+
+<CodeSurfer>
+
+```ts
+const marshall<VALUE>: Marshall<Value> => { ... }
+```
+
+```ts
+const marshall<VALUE>: Marshall<Value> => { ... }
+
+marshall('string') // { S: 'string' }
+marshall(42) // { N: 42 }
+```
+
+```ts
+const marshall<VALUE>: Marshall<Value> => { ... }
+
+marshall('string') // { S: 'string' }
+marshall(42) // { N: 42 }
+
+type Marshall<VALUE> = ???
+```
+
+</CodeSurfer>
+
+---
+
+# Let's code 🤓
+
+---
+
+# Extend: un nom très mal choisi
+
+<CodeSurferColumns>
+
+<Step>
+
+```ts
+class A extends B {
+  extension: string
+}
+```
+
+```ts
+class B {
+  base: string
+}
+```
+
+</Step>
+
+<Step>
+
+```ts 1:4
+class A {
+  base: string
+  extension: string
+}
+```
+
+```ts
+class B {
+  base: string
+}
+```
+
+</Step>
+
+</CodeSurferColumns>
+
+<Notes>
+
+Viens du monde des classes
+
+On voit l'extension visuellement: On agrandit quelque chose
+
+</Notes>
+
+---
+
+Laquelle de ces assertions est vraie ?
+
+<CodeSurfer>
+
+```ts
+type Assert1 = string | number extends string ? true : false
+
+type Assert2 = string extends string | number ? true : false
+```
+
+```diff 3
+
+```
+
+</CodeSurfer>
+
+---
+
+<CodeSurferColumns>
+
+<Step>
+
+```ts
+A extends B
+ ⇔ A has B properties and more
+```
+
+<img
+  src={img}
+  style={{ opacity: 0, height: '50%', width: 'auto' }}
+/>
+
+</Step>
+
+<Step>
+
+```ts
+A extends B
+ ⇔ A has B properties and more
+ ⇔ A stricter than B
+```
+
+<img
+  src={img}
+  style={{ opacity: 0, height: '50%', width: 'auto' }}
+/>
+
+</Step>
+
+<Step>
+
+```ts
+A extends B
+ ⇔ A has B properties and more
+ ⇔ A stricter than B
+ ⇔ A ⊆ B
+```
+
+<img src={img} style={{ height: '50%', width: 'auto' }} />
+
+</Step>
+
+<Step>
+
+```ts
+A extends B
+ ⇔ A has B properties and more
+ ⇔ A stricter than B
+ ⇔ A ⊆ B
+
+✅ string extends string | number
+```
+
+<img src={img} style={{ height: '50%', width: 'auto' }} />
+
+</Step>
+
+</CodeSurferColumns>
+
+---
+
+Conseil: Bannir les adjectif de taille
+
+- Big, small, narrow..
+
+- Strict vs Loose
+
+---
+
+<CodeSurfer>
+
+```ts 1
+type VALUE extends string | number
+```
+
+```ts 1:3
+type VALUE extends string | number
+// string
+// number
+```
+
+```ts 1:5
+type VALUE extends string | number
+// string
+// number
+// string | number
+// never
+```
+
+</CodeSurfer>
+
+---
+
+L’union est éclatée, le `extends` appliqué, les résultats réconciliés.
+
+Quantique / Fentes de Young:
+
+- Le cas double est déjà géré car `string` et `number` se retrouvent
+- Le cas `never` est déjà géré car l’éclatement ne génère aucun élément
+
+Exemple avec `41 | "a" | "b"`
+
+---
+
+Dans le cas où on ne veut **pas** de distributivité: Utiliser un tuple
+
+Il y a donc une différence entre `{ key: value } extends { key: string }` et `value extends string` !
+
+---
+
+### Récursion sur un object
+
+mapped type
+
+---
+
+# Let's code 🤓
+
+---
+
+Récursion sur un array: Introduire infer
+
+---
+
+### Inférer de façon narrow
+
+Technique de F.Narrow
+
+Pour les tuples, utiliser l’ordre des arguments
+
+Le keyword const depuis TS ?
+
+---
+
+### **Etendre une fonction ou une méthode: Attention à la contravariance**
+
+Exemple avec le validateur
+
+Les keyword in/out
+
+---
+
+### **Limitation: Mapper des génériques**
+
+Contrairement à `array.map(fn)`, on ne peut pas appliquer `Map<ARRAY, GENERIC>`
