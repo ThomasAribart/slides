@@ -8,7 +8,8 @@ import {
   vsDark,
   nightOwl
 } from '@code-surfer/themes'
-import img from './img.png'
+import vennDiagrams from './vennDiagrams.png'
+import youngExperiment from './Double_fentes.png'
 
 export const theme = nightOwl
 
@@ -31,7 +32,9 @@ Fullstack: TypeScript, Serverless
 
 ---
 
-# Qu’est-ce qu’un générique ?
+#1
+
+# 🤔 Qu’est-ce qu’un type générique ?
 
 ---
 
@@ -59,16 +62,6 @@ type Num = Contained<number> // { value: number }
 <!-- prettier-ignore -->
 ```ts
 type Contained<
-  VALUE extends string | number
-> = { value: VALUE }
-
-type Str = Contained<string> // { value: string }
-type Num = Contained<number> // { value: number }
-```
-
-<!-- prettier-ignore -->
-```ts
-type Contained<
   VALUE extends string | number = "default"
 > = { value: VALUE }
 
@@ -80,13 +73,15 @@ type Num = Contained<number> // { value: number }
 
 ---
 
-# Pourquoi utiliser des génériques ?
+Pourquoi utiliser des génériques ?
 
 - DRY
 
 ---
 
-# Fonctions ?
+#1 (bis)
+
+# 🤔 Qu’est-ce qu’une <span style={{ color: "#7FDBCA" }}>fonction</span> générique ?
 
 ---
 
@@ -152,13 +147,9 @@ On obtient cette syntaxe, qui est un peu redondante. La beauté, c'est que TypeS
 
 ---
 
-# Components ?
+#1 (bis²)
 
-(TODO)
-
----
-
-# Classes ?
+# 🤔 Qu’est-ce qu’une <span style={{ color: "#7FDBCA" }}>classe</span> générique ?
 
 ---
 
@@ -284,9 +275,15 @@ Ce qu'il se passe c'est qu'il y a des génériques qui opèrent sous le capot
 
 ---
 
-# Definir des génériques
+#2
 
-# Transformer des génériques
+# 🤔 Comment <span style={{ color: "#7FDBCA" }}>manipuler</span> des génériques ?
+
+<Notes>
+
+Définir des génériques, c'est pas la seule chose qu'on faire: on va voir qu'on peut aussi les transformer au passage.
+
+</Notes>
 
 ---
 
@@ -303,14 +300,14 @@ const marshall<VALUE>: Marshall<Value> => { ... }
 ```ts
 const marshall<VALUE>: Marshall<Value> => { ... }
 
-marshall('string') // { S: 'string' }
+marshall('foo') // { S: 'foo' }
 marshall(42) // { N: 42 }
 ```
 
 ```ts
 const marshall<VALUE>: Marshall<Value> => { ... }
 
-marshall('string') // { S: 'string' }
+marshall('foo') // { S: 'foo' }
 marshall(42) // { N: 42 }
 
 type Marshall<VALUE> = ???
@@ -324,7 +321,7 @@ type Marshall<VALUE> = ???
 
 ---
 
-# Extend: un nom très mal choisi
+### Le problème avec <span style={{ color: '#7FDBCA' }}>`extends`</span>
 
 <CodeSurferColumns>
 
@@ -373,23 +370,29 @@ On voit l'extension visuellement: On agrandit quelque chose
 
 ---
 
-Laquelle de ces assertions est vraie ?
+### Le problème avec <span style={{ color: '#7FDBCA' }}>`extends`</span>
+
+### Laquelle de ces assertions est vraie ?
 
 <CodeSurfer>
 
 ```ts
-type Assert1 = string | number extends string ? true : false
+// A
+type AssertA = string | number extends string ? true : false
 
-type Assert2 = string extends string | number ? true : false
+// B
+type AssertB = string extends string | number ? true : false
 ```
 
-```diff 3
+```diff 4:5
 
 ```
 
 </CodeSurfer>
 
 ---
+
+### Le problème avec <span style={{ color: '#7FDBCA' }}>`extends`</span>
 
 <CodeSurferColumns>
 
@@ -401,7 +404,7 @@ A extends B
 ```
 
 <img
-  src={img}
+  src={vennDiagrams}
   style={{ opacity: 0, height: '50%', width: 'auto' }}
 />
 
@@ -416,7 +419,7 @@ A extends B
 ```
 
 <img
-  src={img}
+  src={vennDiagrams}
   style={{ opacity: 0, height: '50%', width: 'auto' }}
 />
 
@@ -431,7 +434,10 @@ A extends B
  ⇔ A ⊆ B
 ```
 
-<img src={img} style={{ height: '50%', width: 'auto' }} />
+<img
+  src={vennDiagrams}
+  style={{ height: '50%', width: 'auto' }}
+/>
 
 </Step>
 
@@ -446,7 +452,10 @@ A extends B
 ✅ string extends string | number
 ```
 
-<img src={img} style={{ height: '50%', width: 'auto' }} />
+<img
+  src={vennDiagrams}
+  style={{ height: '50%', width: 'auto' }}
+/>
 
 </Step>
 
@@ -454,19 +463,35 @@ A extends B
 
 ---
 
+## ☝️ Utiliser <span style={{ color: '#7FDBCA' }}>"strict"</span> ou <span style={{ color: '#7FDBCA' }}>"loose"</span> pour qualifier vos types
+
+<p>
+  Et pas:{' '}
+  <span style="color:red;text-decoration:line-through">
+    <span style="color:#d6deeb">Big</span>
+  </span>
+  , <span style="color:red;text-decoration:line-through">
+    <span style="color:#d6deeb">large</span>
+  </span>, <span style="color:red;text-decoration:line-through">
+    <span style="color:#d6deeb">small</span>
+  </span>, <span style="color:red;text-decoration:line-through">
+    <span style="color:#d6deeb">narrow</span>
+  </span>...
+</p>
+
+<Notes>
+
 Conseil: Bannir les adjectif de taille
 
-- Big, small, narrow..
+</Notes>
 
-- Strict vs Loose
+---
+
+# Est-ce qu'on a fini? 🤓
 
 ---
 
 <CodeSurfer>
-
-```ts 1
-type VALUE extends string | number
-```
 
 ```ts 1:3
 type VALUE extends string | number
@@ -484,28 +509,224 @@ type VALUE extends string | number
 
 </CodeSurfer>
 
+<Notes>
+
+Est-ce qu'on a couvert tous les edge cases possible?
+
+Non il y en a une infinité, mais il y en a deux en particuliers qui m'intéressent: Lesquels?
+
+</Notes>
+
 ---
 
-L’union est éclatée, le `extends` appliqué, les résultats réconciliés.
+### Que vaut <span style={{ color: '#7FDBCA' }}><code>Marshall&lt;string | number&gt;</code></span>?
+
+<CodeSurfer>
+
+```ts
+type Marshall<VALUE> = VALUE extends string
+  ? { S: VALUE }
+  : VALUE extends number
+  ? { N: VALUE }
+  : never
+```
+
+```ts
+type Marshall<VALUE> = VALUE extends string
+  ? { S: VALUE }
+  : VALUE extends number
+  ? { N: VALUE }
+  : never
+
+// A
+type TestA = Marshall<string | number> // never
+
+// B
+type TestB = Marshall<string | number> // { S: string } | { N: number }
+```
+
+```diff 10:11
+
+```
+
+</CodeSurfer>
+
+---
+
+### <span style={{ color: '#7FDBCA' }}><code>Extends</code></span> est un peu <span style={{ color: '#7FDBCA' }}>quantique</span>
+
+<img
+  src={youngExperiment}
+  style={{ background: 'blanchedalmond', padding: '100px' }}
+/>
+
+### L'électron passe dans les <span style={{ color: '#7FDBCA' }}>deux fentes</span>
+
+<Notes>
 
 Quantique / Fentes de Young:
 
 - Le cas double est déjà géré car `string` et `number` se retrouvent
 - Le cas `never` est déjà géré car l’éclatement ne génère aucun élément
 
-Exemple avec `41 | "a" | "b"`
+</Notes>
 
 ---
 
-Dans le cas où on ne veut **pas** de distributivité: Utiliser un tuple
+<CodeSurfer>
+
+```ts
+(
+  | string
+  | number
+) extends string
+  ? ...
+  : ...
+```
+
+```ts 1:11
+(
+  | string
+) extends string
+  ? ...
+  : ...
+
+(
+  | number
+) extends string
+  ? ...
+  : ...
+```
+
+```ts 1:7
+Marshall<string>
+
+(
+  | number
+) extends string
+  ? ...
+  : ...
+```
+
+<!-- prettier-ignore -->
+```ts 1:3
+Marshall<string>
+| Marshall<number>
+// { S: string } | { N: number }
+```
+
+</CodeSurfer>
+
+---
+
+### Que vaut <span style={{ color: '#7FDBCA' }}><code>Marshall&lt;never&gt;</code></span>?
+
+<CodeSurfer>
+
+```ts
+type Marshall<VALUE> = VALUE extends string
+  ? { S: VALUE }
+  : VALUE extends number
+  ? { N: VALUE }
+  : never
+```
+
+```ts
+type Marshall<VALUE> = VALUE extends string
+  ? { S: VALUE }
+  : VALUE extends number
+  ? { N: VALUE }
+  : never
+
+// A
+type TestA = Marshall<never> // never
+
+// B
+type TestB = Marshall<never> // { S: never } | { N: never }
+```
+
+```ts 7:9
+type Marshall<VALUE> = VALUE extends string
+  ? { S: VALUE }
+  : VALUE extends number
+  ? { N: VALUE }
+  : never
+
+// A
+type TestA = Marshall<never> // never
+// ...car la distributivité renvoie ∅ !
+
+// B
+type TestB = Marshall<never> // { S: never } | { N: never }
+```
+
+</CodeSurfer>
+
+---
+
+### Pour <span style={{ color: '#7FDBCA' }}>opt out</span> de la distributivé:
+
+<CodeSurfer>
+
+```ts
+// Distribué
+type Type<VALUE> = VALUE extends A ? B : C
+
+// 🙅‍♂️ Non-distribué
+type Type<VALUE> = [VALUE] extends [A] ? B : C
+
+// 🙅‍♂️ Non-distribué
+type Type<VALUE> = { a: VALUE } extends { a: A } ? B : C
+```
+
+</CodeSurfer>
+
+<Notes>
 
 Il y a donc une différence entre `{ key: value } extends { key: string }` et `value extends string` !
 
+</Notes>
+
 ---
 
-### Récursion sur un object
+# Oui! On a fini 🎉
 
-mapped type
+---
+
+#3
+
+# Aller plus loin: La <span style={{ color: "#7FDBCA" }}>récursion</span> 😵‍💫
+
+---
+
+<CodeSurfer>
+
+```ts
+const marshall<VALUE>: Marshall<Value> => { ... }
+
+marshall('foo') // { S: 'foo' }
+marshall(42) // { N: 42 }
+```
+
+```ts 1,6:10
+const marshall<VALUE>: Marshall<Value> => { ... }
+
+marshall('foo') // { S: 'foo' }
+marshall(42) // { N: 42 }
+
+marshall({ foo: 42 })
+// { M: { foo: Marshall<42> } }
+marshall(['foo', 42])
+// { L: [Marshall<'foo'>, Marshall<42>] }
+```
+
+</CodeSurfer>
+
+<Notes>
+
+Pour l'instant on a codé marshall sur des valeurs littérales. Le marshalling est récursif.
+
+</Notes>
 
 ---
 
@@ -513,28 +734,32 @@ mapped type
 
 ---
 
-Récursion sur un array: Introduire infer
+#4
+
+# Quelques <span style={{ color: "#7FDBCA" }}>warnings</span> ⚠️
 
 ---
 
-### Inférer de façon narrow
+# TS a encore du mal à lier le typage est le code
 
-Technique de F.Narrow
+<CodeSurfer>
 
-Pour les tuples, utiliser l’ordre des arguments
+```ts
+const marshall = <VALUE extends string | number>(
+  value: VALUE
+): Marshall<VALUE> => {
+  if (typeof value === 'string') {
+    return { S: value } // ❌ Fails
+  }
 
-Le keyword const depuis TS ?
+  return ...
+}
+```
+
+</CodeSurfer>
 
 ---
 
-### **Etendre une fonction ou une méthode: Attention à la contravariance**
+### Contravariance
 
 Exemple avec le validateur
-
-Les keyword in/out
-
----
-
-### **Limitation: Mapper des génériques**
-
-Contrairement à `array.map(fn)`, on ne peut pas appliquer `Map<ARRAY, GENERIC>`
