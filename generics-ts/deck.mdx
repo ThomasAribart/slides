@@ -10,10 +10,22 @@ import {
 } from '@code-surfer/themes'
 import vennDiagrams from './vennDiagrams.png'
 import youngExperiment from './Double_fentes.png'
+import voyageAuPaysDesMaths from './voyageAuPaysDesMaths.png'
+import dynamodb from './dynamodb.jpg'
 
 export const theme = nightOwl
 
-# Voyage au pays des génériques
+<img
+  src={voyageAuPaysDesMaths}
+  style={{
+    height: '30%',
+    marginBottom: '100px',
+    width: 'auto',
+    borderRadius: '50px'
+  }}
+/>
+
+# Voyage au pays des <span style={{ color: "#7FDBCA" }}>génériques</span>
 
 ---
 
@@ -32,9 +44,13 @@ Fullstack: TypeScript, Serverless
 
 ---
 
+# DynamoDB-Toolshack
+
+---
+
 #1
 
-# 🤔 Qu’est-ce qu’un type générique ?
+# 🤔 Qu’est-ce qu’un type <span style={{ color: "#7FDBCA" }}>générique</span> ?
 
 ---
 
@@ -71,11 +87,23 @@ type Num = Contained<number> // { value: number }
 
 </CodeSurfer>
 
+<Notes>
+
+A tout type on peut associer un type générique, que j'ai appelé VALUE. On le place entre chevrons comme ça.
+
+Ca nous permet de ré-utiliser ce type dans des contextes différents.
+
+</Notes>
+
 ---
 
-Pourquoi utiliser des génériques ?
+## Pourquoi utiliser des génériques ?
 
-- DRY
+### 🤫 DRY
+
+<h3 style={{ opacity: 0.5 }}>?</h3>
+
+<h3 style={{ opacity: 0.5 }}>?</h3>
 
 ---
 
@@ -88,11 +116,11 @@ Pourquoi utiliser des génériques ?
 <CodeSurfer>
 
 ```ts
-const contain = (value: unknown): Contained => ({ value })
+const contain = (value: unknown) => ({ value })
 ```
 
 ```ts
-const contain = (value: unknown): Contained => ({ value })
+const contain = (value: unknown) => ({ value })
 
 contain('foo') // { value: unknown }
 ```
@@ -139,7 +167,9 @@ contain('foo')
 
 <Notes>
 
-Le type générique va être appliqué aux argument, et peut être utilisé pour typer le retour de la fonction.
+J'ai écrit ici une fonction toute simple qui prend une valeur et la met dans un objet.
+
+Le type générique va venir s'appliquer aux argument, et peut être utilisé pour typer le retour de la fonction.
 
 On obtient cette syntaxe, qui est un peu redondante. La beauté, c'est que TypeScript peut inférer la valeur du générique à partir de l'argument.
 
@@ -204,11 +234,23 @@ Encore une fois, une fois la classe écrite, on n'a plus besoin d'écrire de typ
 
 ---
 
-# Pourquoi utiliser des génériques ?
+## Pourquoi utiliser des génériques ?
 
-- DRY
-- Améliore considérablement le type-system
-- Pas besoin d'apprendre pour s'en servir
+### 🤫 DRY
+
+### 🌈 Améliore grandement le type-system
+
+<h3 style={{ opacity: 0.5 }}>?</h3>
+
+---
+
+## Pourquoi utiliser des génériques ?
+
+### 🤫 DRY
+
+### 🌈 Améliore grandement le type-system
+
+### 🙈 ...sans même que vous ayez besoin de le savoir
 
 ---
 
@@ -287,7 +329,9 @@ Définir des génériques, c'est pas la seule chose qu'on faire: on va voir qu'o
 
 ---
 
-# Live-coding sur un exemple concret: Le marshalling
+<img src={dynamodb} />
+
+### Un exemple concret: Le <span style={{ color: "#7FDBCA" }}>marshalling</span>
 
 ---
 
@@ -314,6 +358,12 @@ type Marshall<VALUE> = ???
 ```
 
 </CodeSurfer>
+
+<Notes>
+
+L'exercice est le suivant: Typer une fonction Marshall qui opère
+
+</Notes>
 
 ---
 
@@ -560,11 +610,33 @@ type TestB = Marshall<string | number> // { S: string } | { N: number }
   style={{ background: 'blanchedalmond', padding: '100px' }}
 />
 
-### L'électron passe dans les <span style={{ color: '#7FDBCA' }}>deux fentes</span>
+### Par <span style={{ color: '#7FDBCA' }}>quelle fente</span> passe l'électron?
 
 <Notes>
 
-Quantique / Fentes de Young:
+J'aime bien dire que extends un peu quantique. Dans l'expérience des fentes de Young, on lance un électron sur un écran opaque avec deux fentes, et on pose la question: Par quelle fente est-il passé?
+La réponse est: Les deux
+
+- Le cas double est déjà géré car `string` et `number` se retrouvent
+- Le cas `never` est déjà géré car l’éclatement ne génère aucun élément
+
+</Notes>
+
+---
+
+### <span style={{ color: '#7FDBCA' }}><code>Extends</code></span> est un peu <span style={{ color: '#7FDBCA' }}>quantique</span>
+
+<img
+  src={youngExperiment}
+  style={{ background: 'blanchedalmond', padding: '100px' }}
+/>
+
+### Les <span style={{ color: '#7FDBCA' }}>deux fentes</span>!
+
+<Notes>
+
+J'aime bien dire que extends un peu quantique. Dans l'expérience des fentes de Young, on lance un électron sur un écran opaque avec deux fentes, et on pose la question: Par quelle fente est-il passé?
+La réponse est: Les deux
 
 - Le cas double est déjà géré car `string` et `number` se retrouvent
 - Le cas `never` est déjà géré car l’éclatement ne génère aucun élément
@@ -616,6 +688,14 @@ Marshall<string>
 ```
 
 </CodeSurfer>
+
+<Notes>
+
+Never mais seulement parce que la distributivité renvoie l'ensemble vide pas parce qu'il y a never ici
+
+Je pourrais renvoyer toto que ça serait la même
+
+</Notes>
 
 ---
 
@@ -740,7 +820,7 @@ Pour l'instant on a codé marshall sur des valeurs littérales. Le marshalling e
 
 ---
 
-# TS a encore du mal à lier le typage est le code
+### TS <span style={{ color: "#7FDBCA" }}>ne type-checke pas</span> (encore) le JS d'un type générique
 
 <CodeSurfer>
 
@@ -760,6 +840,70 @@ const marshall = <VALUE extends string | number>(
 
 ---
 
-### Contravariance
+### Attention à la <span style={{ color: "#7FDBCA" }}>contravariance</span>
 
-Exemple avec le validateur
+<CodeSurfer>
+
+```ts
+type f = (...args: ParamsF) => ReturnF
+type g = (...args: ParamsG) => ReturnG
+
+f extends g only if...
+```
+
+```ts 1,2,5
+type f = (...args: ParamsF) => ReturnF
+type g = (...args: ParamsG) => ReturnG
+
+f extends g only if...
+    ...ReturnF ⊆ ReturnG // covariance
+```
+
+```ts 1,2,5,6
+type f = (...args: ParamsF) => ReturnF
+type g = (...args: ParamsG) => ReturnG
+
+f extends g only if...
+    ...ReturnF ⊆ ReturnG // covariance
+...AND ParamsF ⊇ ParamsG // contravariance
+```
+
+</CodeSurfer>
+
+---
+
+### On ne peut pas <span style={{ color: "#7FDBCA" }}>ré-utiliser</span> un type générique dans un type générique
+
+<CodeSurfer>
+
+```ts
+const prefix = (string) => `_${string}`
+const prefixMap = (strings) => strings.map(prefix)
+```
+
+```ts
+const prefix = (string) => `_${string}`
+const prefixMap = (strings) => strings.map(prefix)
+
+type Prefix<STR> = `_${STR}`
+// ❌ Not possible
+type PrefixMap<STRINGS> = Map<STRINGS, Prefix>
+```
+
+```ts
+const prefix = (string) => `_${string}`
+const prefixMap = (strings) => strings.map(prefix)
+
+import { Call, S, T } from 'hotscript'
+type Prefix = S.Prepend<'_'>
+// ✅ Possible but next level 🌶️
+type PrefixMap<STRINGS> = Call<T.Map<Prefix>, STRINGS>
+```
+
+</CodeSurfer>
+
+---
+
+# Merci ❤️
+
+- Re-moi
